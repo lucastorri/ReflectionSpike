@@ -1,21 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package reflectionspike.validator;
 
 import reflectionspike.model.A;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- *
- * @author lucastorri
- */
 public class ValidatorTest {
 
     private Validator validator;
@@ -33,6 +21,11 @@ public class ValidatorTest {
     @Test(expected=RuntimeException.class)
     public void validatingBiggerThanShouldThrowExceptionIfValueIsEqualOrSmaller() throws Exception {
         validator.validate(new A(3L, null, "0"));
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void validatingNotNullShouldThrowExceptionIfFieldIsNull() throws Exception {
+        validator.validate(new A(11L, null, "0"));
     }
 
     @Test

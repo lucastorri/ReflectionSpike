@@ -1,17 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package reflectionspike.model;
 
 import reflectionspike.validator.ValidadeNotEmpty;
 import reflectionspike.validator.ValidateBiggerThan;
 import reflectionspike.validator.ValidateNotNull;
 
-/**
- *
- * @author lucastorri
- */
 public class A {
 
     @ValidateNotNull

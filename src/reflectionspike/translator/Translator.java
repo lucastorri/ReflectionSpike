@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package reflectionspike.translator;
 
 import java.beans.IntrospectionException;
@@ -13,10 +9,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- *
- * @author lucastorri
- */
 public abstract class Translator<A, B> {
 
     private A a;

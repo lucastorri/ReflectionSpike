@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package reflectionspike.validator;
 
 import java.beans.IntrospectionException;
@@ -10,10 +6,6 @@ import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 
-/**
- *
- * @author lucastorri
- */
 public class Validator {
 
     public void validate(Object o) throws RuntimeException, IllegalAccessException, NoSuchFieldException, InvocationTargetException, IntrospectionException {
