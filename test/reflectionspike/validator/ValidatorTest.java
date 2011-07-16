@@ -20,7 +20,7 @@ public class ValidatorTest {
 
     @Test(expected=RuntimeException.class)
     public void validatingBiggerThanShouldThrowExceptionIfValueIsEqualOrSmaller() throws Exception {
-        validator.validate(new A(3L, null, "0"));
+        validator.validate(new A(3L, "alo", "0"));
     }
 
     @Test(expected=RuntimeException.class)
