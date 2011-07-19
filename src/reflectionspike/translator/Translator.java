@@ -14,49 +14,46 @@ public abstract class Translator<A, B> {
     private A a;
     private B b;
 
-    public Translator() {
+    private A newA() {
+        return (A) newGeneric(0);
+    }
+
+    private B newB() {
+        return (B) newGeneric(1);
+    }
+
+    private Object newGeneric(int index) {
         try {
-            a = (A) ((Class) ((ParameterizedType) this.getClass().
-                    getGenericSuperclass()).getActualTypeArguments()[0]).newInstance();
-            b = (B) ((Class) ((ParameterizedType) this.getClass().
-                    getGenericSuperclass()).getActualTypeArguments()[1]).newInstance();
+            return ((Class) ((ParameterizedType) this.getClass().
+                    getGenericSuperclass()).getActualTypeArguments()[index]).newInstance();
         } catch (Exception e) {
-            throw new RuntimeException();
+            throw new RuntimeException("Could not instantiate type");
         }
     }
 
     public B translateTo(A original) {
-        try {
-            B translated = (B) b.getClass().newInstance();
-
-            translate(original, translated, mappingTable());
-
-            return translated;
-        } catch (Exception e) {
-            return null;
-        }
+        return translate(original, newB(), mappingTable());
     }
-    
+
     public A translateFrom(B original) {
+        return translate(original, newA(), reverseMappingTable());
+    }
+
+    private <T> T translate(Object original, T translated, Map<String, String> mappingTable) {
         try {
-            A translated = (A) a.getClass().newInstance();
-
-            translate(original, translated, reverseMappingTable());
-
-            return translated;
+            realTranslate(original, translated, mappingTable);
         } catch (Exception e) {
             return null;
         }
+        return translated;
     }
 
-    private void translate(Object original, Object translated, Map<String, String> mappingTable) throws IntrospectionException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+    private void realTranslate(Object original, Object translated, Map<String, String> mappingTable) throws InvocationTargetException, IllegalAccessException, IllegalArgumentException, IntrospectionException {
         Map<String, PropertyDescriptor> fromDescriptors = getPropertyDescriptors(original.getClass());
         Map<String, PropertyDescriptor> toDescriptors = getPropertyDescriptors(translated.getClass());
-
         for (String value : mappingTable.keySet()) {
             final Method setter = toDescriptors.get(mappingTable.get(value)).getWriteMethod();
             final Method getter = fromDescriptors.get(value).getReadMethod();
-
             setter.invoke(translated, convertType(getter.invoke(original), getter.getReturnType(), setter.getParameterTypes()[0]));
         }
     }
