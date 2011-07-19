@@ -1,5 +1,7 @@
 package reflectionspike.translator;
 
+import static reflectionspike.typeconverter.TypeConverter.convertType;
+
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -56,25 +58,6 @@ public abstract class Translator<A, B> {
             final Method getter = fromDescriptors.get(value).getReadMethod();
             setter.invoke(translated, convertType(getter.invoke(original), getter.getReturnType(), setter.getParameterTypes()[0]));
         }
-    }
-
-    private Object convertType(Object o, Class originalType, Class targetType) {
-        if (o != null && !originalType.equals(targetType)) {
-            if (originalType.equals(String.class)) {
-                String s = o.toString();
-                if (targetType.equals(Long.class)) {
-                    o = Long.parseLong(s);
-                } else if (targetType.equals(Integer.class)) {
-                    o = Integer.parseInt(s);
-                } else if (targetType.equals(Short.class)) {
-                    o = Short.parseShort(s);
-                }
-            } else if (targetType.equals(String.class)) {
-                o = o.toString();
-            }
-        }
-
-        return o;
     }
 
     private Map<String, PropertyDescriptor> getPropertyDescriptors(Class clz) throws IntrospectionException {
