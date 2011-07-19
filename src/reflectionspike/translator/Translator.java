@@ -51,19 +51,19 @@ public abstract class Translator<A, B> {
     }
 
     private void realTranslate(Object original, Object translated, Map<String, String> mappingTable) throws InvocationTargetException, IllegalAccessException, IllegalArgumentException, IntrospectionException {
-        Map<String, PropertyDescriptor> fromDescriptors = getPropertyDescriptors(original.getClass());
-        Map<String, PropertyDescriptor> toDescriptors = getPropertyDescriptors(translated.getClass());
-        for (String value : mappingTable.keySet()) {
-            final Method setter = toDescriptors.get(mappingTable.get(value)).getWriteMethod();
-            final Method getter = fromDescriptors.get(value).getReadMethod();
+        Map<String, PropertyDescriptor> originalTypeFieldDescriptors = getFieldDescriptors(original.getClass());
+        Map<String, PropertyDescriptor> translatedTypeFieldDescriptors = getFieldDescriptors(translated.getClass());
+        for (String field : mappingTable.keySet()) {
+            final Method getter = originalTypeFieldDescriptors.get(field).getReadMethod();
+            final Method setter = translatedTypeFieldDescriptors.get(mappingTable.get(field)).getWriteMethod();
             setter.invoke(translated, convertType(getter.invoke(original), getter.getReturnType(), setter.getParameterTypes()[0]));
         }
     }
 
-    private Map<String, PropertyDescriptor> getPropertyDescriptors(Class clz) throws IntrospectionException {
+    private Map<String, PropertyDescriptor> getFieldDescriptors(Class clz) throws IntrospectionException {
         final HashMap<String, PropertyDescriptor> descriptors = new HashMap<String, PropertyDescriptor>();
-        for (PropertyDescriptor pd : Introspector.getBeanInfo(clz).getPropertyDescriptors()) {
-            descriptors.put(pd.getName(), pd);
+        for (PropertyDescriptor fieldDescriptors : Introspector.getBeanInfo(clz).getPropertyDescriptors()) {
+            descriptors.put(fieldDescriptors.getName(), fieldDescriptors);
         }
         return descriptors;
     }
@@ -71,8 +71,8 @@ public abstract class Translator<A, B> {
     public abstract Map<String, String> mappingTable();
 
     public Map<String, String> reverseMappingTable() {
-        Map<String, String> mappingTable = mappingTable();
-        Map<String, String> reverseMappingTable = new HashMap<String, String>();
+        final Map<String, String> mappingTable = mappingTable();
+        final Map<String, String> reverseMappingTable = new HashMap<String, String>();
         for (String value : mappingTable.keySet()) {
             reverseMappingTable.put(mappingTable.get(value), value);
         }
